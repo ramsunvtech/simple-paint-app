@@ -1,0 +1,15 @@
+.toolbar-icons{
+  width: 50px;
+  height: 50px;
+}
+
+.paint-container {
+  float: left;
+}
+
+#paint-area {
+  border: 1px solid #757575;
+  margin: 10px;
+  cursor: crosshair;
+  background-color:#459ac4;
+}
