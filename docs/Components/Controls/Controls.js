@@ -5,31 +5,48 @@ class Controls extends BaseComponent {
     super();
   }
 
+  onMount() {
+    const radioGroups = this.querySelectorAll('.radio-group');
+
+    for (const $radioInput of radioGroups) {
+      $radioInput.addEventListener('change', (event) => {
+        this.$app.dispatchEvent(
+          new CustomEvent('onControlChange', {
+            detail: event.target.value
+          })
+        );
+      });
+    }
+  }
+
   render() {
+    const {
+      controlType
+    } = this.state;
 
     this.innerHTML = `
       <div class="radio-group">
         <input
           type="radio"
+          name="shapes"
           value="Rectangle"
-          checked={this.state.selectedOption === "Rectangle"}
-          onChange={this.radioChange}
+          ${controlType === "Rectangle" ? 'checked' : ''}
           class="radio-group"
         />
           Rectangle
         <input
           type="radio"
+          name="shapes"
           value="Circle"
-          checked={this.state.selectedOption === "Circle"}
-          onChange={this.radioChange}
+          ${controlType === "Circle" ? 'checked': ''}
           class="radio-group"
         />
           Circle
         <input
           type="radio"
+          name="shapes"
           value="Triangle"
-          checked={this.state.selectedOption === "Triangle"}
-          onChange={this.radioChange}
+          ${controlType === "Triangle" ? 'checked' : ''}
           class="radio-group"
         />
           Triangle
