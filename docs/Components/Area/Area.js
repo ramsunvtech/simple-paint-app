@@ -13,7 +13,7 @@ class Area extends BaseComponent {
       rH: 0,
       mouseDown: false,
       controlType: 'Rectangle',
-      lastContext: null,
+      lastContext: {},
     });
   }
 
@@ -38,7 +38,40 @@ class Area extends BaseComponent {
     return context;
   }
 
+  saveContext() {
+    const {
+      X,
+      Y,
+      iX,
+      iY,
+      rX,
+      rY,
+      rW,
+      rH
+    } = this.state;
+
+    this.updateArea({
+      lastContext: { X, Y, iX, iY, rX, rY, rW, rH }
+    });
+  }
+
+  restoreContext() {
+    const {
+      X,
+      Y,
+      iX,
+      iY,
+      rX,
+      rY,
+      rW,
+      rH
+    } = this.state.lastContext;
+
+    this.updateArea({ X, Y, iX, iY, rX, rY, rW, rH });
+  }
+
   cleanArea(e) {
+    this.saveContext();
     this.updateArea({ X: 0, Y: 0, iX: 0, iY: 0, rX: 0, rY: 0, rW: 0, rH: 0 });
     this.getPaintArea();
   }
@@ -55,10 +88,11 @@ class Area extends BaseComponent {
   drawRectangle = () => {
     const context = this.getPaintArea();
     context.lineWidth = "4";
-    context.fillStyle = "green";
+    context.fillStyle = "orange";
     context.setLineDash([]);
     context.rect(this.state.rX, this.state.rY, this.state.rW, this.state.rH);
     context.fill();
+    this.saveContext();
   };
 
   onMouseMove = (event) => {
@@ -128,10 +162,11 @@ class Area extends BaseComponent {
   drawCircle = () => {
     const context = this.getPaintArea();
     context.lineWidth = "4";
-    context.fillStyle = "orange";
+    context.fillStyle = "yellow";
     context.setLineDash([]);
     context.arc(this.state.rX, this.state.rY, 70, 0, 2 * Math.PI, false);
     context.fill();
+    this.saveContext();
   };
 
   drawTriangle = () => {
@@ -148,6 +183,7 @@ class Area extends BaseComponent {
     // the fill color
     context.fillStyle = "green";
     context.fill();
+    this.saveContext();
   };
 
   updateControlType = (e) => {
@@ -165,7 +201,7 @@ class Area extends BaseComponent {
 
     for (let i = 0; i < coords.length; i++) {
       context.lineWidth = "4";
-      context.fillStyle = "green";
+      context.fillStyle = "orange";
       context.setLineDash([]);
       context.rect(coords[i][0], coords[i][0], coords[i][1], coords[i][1]);
       context.fill();
@@ -178,7 +214,7 @@ class Area extends BaseComponent {
       [300, 95],
     ];
     const context = this.getPaintArea();
-
+    
     for (let i = 0; i < coords.length; i++) {
       context.lineWidth = "4";
       context.setLineDash([]);
@@ -221,16 +257,29 @@ class Area extends BaseComponent {
       controlType,
     } = this.state;
 
-    console.log('splitShape: ', controlType);
-
     if (controlType === "Rectangle") {
       this.drawSeparatedRectangle();
     } else if (controlType === "Circle") {
       this.drawSeparatedCircles();
     } else if (controlType === "Triangle") {
-      // this.drawSeparatedTriangle();
+      this.drawSeparatedTriangle();
     }
   };
+
+  glueShape = (e) => {
+    const {
+      controlType,
+    } = this.state;
+    this.restoreContext();
+
+    if (controlType === "Rectangle") {
+      this.drawRectangle();
+    } else if (controlType === "Circle") {
+      this.drawCircle();
+    } else if (controlType === "Triangle") {
+      this.drawTriangle();
+    }
+  }
 
   onMount() {
     this.$paintArea = this.querySelector('#paint-area');
@@ -247,6 +296,9 @@ class Area extends BaseComponent {
 
     // Receive the Action from ToolBar Component on click of `Scissor`.
     this.$app.addEventListener('onSplitShape', e => this.splitShape(e));
+
+    // Receive the Action from ToolBar Component on click of `Glue`.
+    this.$app.addEventListener('onGlueShape', e => this.glueShape(e));
   }
 
   render() {

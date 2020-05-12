@@ -10,6 +10,7 @@ class ToolBar extends BaseComponent {
   onMount() {
     const $eraser = this.querySelector('#eraser');
     const $scissor = this.querySelector('#scissor');
+    const $glue = this.querySelector('#glue');
 
     // Event Triggers when Eraser clicked.
     $eraser.addEventListener('click', (event) => {
@@ -25,6 +26,12 @@ class ToolBar extends BaseComponent {
       );
     });
 
+    // Event Triggers when Glue clicked.
+    $glue.addEventListener('click', (event) => {
+      this.$app.dispatchEvent(
+        new CustomEvent('onGlueShape', {})
+      );
+    });
   }
 
   render() {
@@ -51,6 +58,7 @@ class ToolBar extends BaseComponent {
           <img
             src="./assets/images/glue.svg"
             class="toolbar-icons"
+            id="glue"
             title="Glue"
           />
         </div>
