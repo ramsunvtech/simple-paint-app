@@ -2,11 +2,14 @@ import BaseComponent from '../BaseComponent/BaseComponent.js';
 
 class ToolBar extends BaseComponent {
   constructor() {
-    super();
+    super({
+      controlType: 'Rectangle'
+    });
   }
 
   onMount() {
     const $eraser = this.querySelector('#eraser');
+    const $scissor = this.querySelector('#scissor');
 
     // Event Triggers when Eraser clicked.
     $eraser.addEventListener('click', (event) => {
@@ -14,6 +17,14 @@ class ToolBar extends BaseComponent {
         new CustomEvent('onErase', {})
       );
     });
+
+    // Event Triggers when Scissor clicked.
+    $scissor.addEventListener('click', (event) => {
+      this.$app.dispatchEvent(
+        new CustomEvent('onSplitShape', {})
+      );
+    });
+
   }
 
   render() {
@@ -32,6 +43,7 @@ class ToolBar extends BaseComponent {
           <img
             src="./assets/images/scissor.svg"
             class="toolbar-icons"
+            id="scissor"
             title="Scissor"
           />
         </div>

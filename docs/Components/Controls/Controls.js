@@ -2,7 +2,9 @@ import BaseComponent from '../BaseComponent/BaseComponent.js';
 
 class Controls extends BaseComponent {
   constructor() {
-    super();
+    super({
+      controlType: 'Rectangle',
+    });
   }
 
   onMount() {

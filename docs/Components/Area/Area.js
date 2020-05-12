@@ -12,7 +12,8 @@ class Area extends BaseComponent {
       rW: 0,
       rH: 0,
       mouseDown: false,
-      controlType: 'Rectangle'
+      controlType: 'Rectangle',
+      lastContext: null,
     });
   }
 
@@ -155,6 +156,82 @@ class Area extends BaseComponent {
     });
   }
 
+  drawSeparatedRectangle = () => {
+    const coords = [
+      [150, 50],
+      [300, 50],
+    ];
+    const context = this.getPaintArea();
+
+    for (let i = 0; i < coords.length; i++) {
+      context.lineWidth = "4";
+      context.fillStyle = "green";
+      context.setLineDash([]);
+      context.rect(coords[i][0], coords[i][0], coords[i][1], coords[i][1]);
+      context.fill();
+    }
+  };
+
+  drawSeparatedCircles = () => {
+    const coords = [
+      [150, 50],
+      [300, 95],
+    ];
+    const context = this.getPaintArea();
+
+    for (let i = 0; i < coords.length; i++) {
+      context.lineWidth = "4";
+      context.setLineDash([]);
+      context.fillStyle = "orange";
+      context.arc(coords[i][0], coords[i][1], 30, 0, Math.PI * 2, true);
+      context.fill();
+    }
+  };
+
+  drawSeparatedTriangle = () => {
+    const coords = [
+      [150, 50],
+      [300, 50],
+    ];
+    const coordsLine = [
+      [200, 100],
+      [300, 200],
+    ];
+    const moveTooLine = [
+      [100, 100],
+      [200, 200],
+    ];
+    const context = this.getPaintArea();
+
+    for (let i = 0; i < coords.length; i++) {
+      context.moveTo(moveTooLine[i][0], moveTooLine[i][1]);
+      context.lineTo(coords[i][0], coords[i][1]);
+      context.lineTo(coordsLine[i][0], coordsLine[i][0]);
+      context.closePath();
+      // the outline
+      context.lineWidth = 10;
+      // the fill color
+      context.fillStyle = "green";
+      context.fill();
+    }
+  };
+
+  splitShape = () => {
+    const {
+      controlType,
+    } = this.state;
+
+    console.log('splitShape: ', controlType);
+
+    if (controlType === "Rectangle") {
+      this.drawSeparatedRectangle();
+    } else if (controlType === "Circle") {
+      this.drawSeparatedCircles();
+    } else if (controlType === "Triangle") {
+      // this.drawSeparatedTriangle();
+    }
+  };
+
   onMount() {
     this.$paintArea = this.querySelector('#paint-area');
     this.$paintArea.addEventListener('mousemove', e => this.onMouseMove(e));
@@ -167,6 +244,9 @@ class Area extends BaseComponent {
 
     // Receive the Action from ToolBar Component on click of `Eraser`.
     this.$app.addEventListener('onErase', e => this.cleanArea(e));
+
+    // Receive the Action from ToolBar Component on click of `Scissor`.
+    this.$app.addEventListener('onSplitShape', e => this.splitShape(e));
   }
 
   render() {
