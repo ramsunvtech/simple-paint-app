@@ -1,4 +1,4 @@
-import { apiEndpoint } from '../../config.js';
+import { apiEndpoint } from '../../Config.js';
 
 class BaseComponent extends HTMLElement {
   constructor(state = {}) {
