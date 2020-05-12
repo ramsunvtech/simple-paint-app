@@ -24,11 +24,26 @@ class Area extends BaseComponent {
     };
   }
 
-  drawOutlineRectangle() {
+  updateArea(state) {
+    this.setState(state, false);
+  }
+
+  getPaintArea() {
     const $paintArea = this.querySelector('#paint-area');
     const context = $paintArea.getContext("2d");
     context.clearRect(0, 0, $paintArea.width, $paintArea.height);
     context.beginPath();
+
+    return context;
+  }
+
+  cleanArea(e) {
+    this.updateArea({ X: 0, Y: 0, iX: 0, iY: 0, rX: 0, rY: 0, rW: 0, rH: 0 });
+    this.getPaintArea();
+  }
+
+  drawOutlineRectangle() {
+    const context = this.getPaintArea();
     context.lineWidth = "1";
     context.strokeStyle = "grey";
     context.setLineDash([5, 3]);
@@ -37,10 +52,7 @@ class Area extends BaseComponent {
   };
 
   drawRectangle = () => {
-    const $paintArea = this.querySelector('#paint-area');
-    const context = $paintArea.getContext("2d");
-    context.clearRect(0, 0, $paintArea.width, $paintArea.height);
-    context.beginPath();
+    const context = this.getPaintArea();
     context.lineWidth = "4";
     context.fillStyle = "green";
     context.setLineDash([]);
@@ -50,7 +62,7 @@ class Area extends BaseComponent {
 
   onMouseMove = (event) => {
     const pos = this.getMousePositionOnCanvas(event);
-    this.setState({
+    this.updateArea({
       X: pos.x,
       Y: pos.y,
       iX: this.state.iX,
@@ -59,7 +71,7 @@ class Area extends BaseComponent {
       rY: Math.min(this.state.iY, pos.y),
       rW: this.state.iX ? Math.abs(this.state.iX - pos.x) : 0,
       rH: this.state.iY ? Math.abs(this.state.iY - pos.y) : 0,
-    }, false);
+    });
     const {
       mouseDown,
       controlType,
@@ -77,12 +89,12 @@ class Area extends BaseComponent {
   };
 
   onMouseOut = (event) => {
-    this.setState({ X: 0, Y: 0, iX: 0, iY: 0, rX: 0, rY: 0, rW: 0, rH: 0 }, false);
+    this.updateArea({ X: 0, Y: 0, iX: 0, iY: 0, rX: 0, rY: 0, rW: 0, rH: 0 });
   };
 
   startDraw = (event) => {
     const pos = this.getMousePositionOnCanvas(event);
-    this.setState({
+    this.updateArea({
       X: pos.x,
       Y: pos.y,
       iX: pos.x,
@@ -92,12 +104,12 @@ class Area extends BaseComponent {
       rW: 0,
       rH: 0,
       mouseDown: true,
-    }, false);
+    });
   };
 
   endDraw = (event) => {
     if (this.state.iX && this.state.iY) {
-      this.setState({ mouseDown: false }, false);
+      this.updateArea({ mouseDown: false });
       const {
         controlType,
       } = this.state;
@@ -113,10 +125,7 @@ class Area extends BaseComponent {
   };
 
   drawCircle = () => {
-    const $paintArea = this.querySelector('#paint-area');
-    const context = $paintArea.getContext("2d");
-    context.clearRect(0, 0, $paintArea.width, $paintArea.height);
-    context.beginPath();
+    const context = this.getPaintArea();
     context.lineWidth = "4";
     context.fillStyle = "orange";
     context.setLineDash([]);
@@ -125,10 +134,7 @@ class Area extends BaseComponent {
   };
 
   drawTriangle = () => {
-    const $paintArea = this.querySelector('#paint-area');
-    const context = $paintArea.getContext("2d");
-    context.clearRect(0, 0, $paintArea.width, $paintArea.height);
-    context.beginPath();
+    const context = this.getPaintArea();
 
     context.moveTo(100, 100);
     context.lineTo(100, 300);
@@ -143,10 +149,10 @@ class Area extends BaseComponent {
     context.fill();
   };
 
-  updateArea = (e) => {
-    this.setState({
+  updateControlType = (e) => {
+    this.updateArea({
       controlType: e.detail,
-    }, false);
+    });
   }
 
   onMount() {
@@ -156,7 +162,11 @@ class Area extends BaseComponent {
     this.$paintArea.addEventListener('mouseup', e => this.endDraw(e));
     this.$paintArea.addEventListener('mouseout', e => this.onMouseOut(e));
 
-    this.$app.addEventListener('onControlChange', e => this.updateArea(e));
+    // Receive the Control Type from Controls Component on Choosing Radio option.
+    this.$app.addEventListener('onControlChange', e => this.updateControlType(e));
+
+    // Receive the Action from ToolBar Component on click of `Eraser`.
+    this.$app.addEventListener('onErase', e => this.cleanArea(e));
   }
 
   render() {
