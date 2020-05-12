@@ -1,1 +1,1 @@
-export const apiEndpoint = 'http://localhost:3000';
+export const apiEndpoint = 'https://my-json-server.typicode.com/ramsunvtech/simple-paint-app';
