@@ -1,5 +1,11 @@
 import BaseComponent from '../BaseComponent/BaseComponent.js';
 
+import {
+  RECTANGLE,
+  CIRCLE,
+  TRIANGLE,
+} from '../../Constants.js';
+
 class Area extends BaseComponent {
   constructor() {
     super({
@@ -12,8 +18,9 @@ class Area extends BaseComponent {
       rW: 0,
       rH: 0,
       mouseDown: false,
-      controlType: 'Rectangle',
+      controlType: RECTANGLE,
       lastContext: {},
+      isErased: false,
     });
   }
 
@@ -51,7 +58,8 @@ class Area extends BaseComponent {
     } = this.state;
 
     this.updateArea({
-      lastContext: { X, Y, iX, iY, rX, rY, rW, rH }
+      lastContext: { X, Y, iX, iY, rX, rY, rW, rH },
+      isErased: false,
     });
   }
 
@@ -72,7 +80,10 @@ class Area extends BaseComponent {
 
   cleanArea(e) {
     this.saveContext();
-    this.updateArea({ X: 0, Y: 0, iX: 0, iY: 0, rX: 0, rY: 0, rW: 0, rH: 0 });
+    this.updateArea({
+      X: 0, Y: 0, iX: 0, iY: 0, rX: 0, rY: 0, rW: 0, rH: 0,
+      isErased: true,
+    });
     this.getPaintArea();
   }
 
@@ -113,11 +124,11 @@ class Area extends BaseComponent {
     } = this.state;
 
     if (mouseDown) {
-      if (controlType === "Rectangle") {
+      if (controlType === RECTANGLE) {
         this.drawOutlineRectangle();
-      } else if (controlType === "Circle") {
+      } else if (controlType === CIRCLE) {
         this.drawCircle();
-      } else if (controlType === "Triangle") {
+      } else if (controlType === TRIANGLE) {
         this.drawTriangle();
       }
     }
@@ -149,11 +160,11 @@ class Area extends BaseComponent {
         controlType,
       } = this.state;
 
-      if (controlType === "Rectangle") {
+      if (controlType === RECTANGLE) {
         this.drawRectangle();
-      } else if (controlType === "Circle") {
+      } else if (controlType === CIRCLE) {
         this.drawCircle();
-      } else if (controlType === "Triangle") {
+      } else if (controlType === TRIANGLE) {
         this.drawTriangle();
       }
     }
@@ -257,11 +268,11 @@ class Area extends BaseComponent {
       controlType,
     } = this.state;
 
-    if (controlType === "Rectangle") {
+    if (controlType === RECTANGLE) {
       this.drawSeparatedRectangle();
-    } else if (controlType === "Circle") {
+    } else if (controlType === CIRCLE) {
       this.drawSeparatedCircles();
-    } else if (controlType === "Triangle") {
+    } else if (controlType === TRIANGLE) {
       this.drawSeparatedTriangle();
     }
   };
@@ -269,14 +280,18 @@ class Area extends BaseComponent {
   glueShape = (e) => {
     const {
       controlType,
+      isErased,
     } = this.state;
+    
+    if (isErased) return;
+
     this.restoreContext();
 
-    if (controlType === "Rectangle") {
+    if (controlType === RECTANGLE) {
       this.drawRectangle();
-    } else if (controlType === "Circle") {
+    } else if (controlType === CIRCLE) {
       this.drawCircle();
-    } else if (controlType === "Triangle") {
+    } else if (controlType === TRIANGLE) {
       this.drawTriangle();
     }
   }
@@ -302,13 +317,15 @@ class Area extends BaseComponent {
   }
 
   render() {
+    const width = this.getAttribute('width');
+    const height = this.getAttribute('height');
 
     this.innerHTML = `
       <div class="paint-container">
         <canvas
           id="paint-area"
-          width="500"
-          height="400"
+          width="${width}"
+          height="${height}"
         />
       </div>
     `;

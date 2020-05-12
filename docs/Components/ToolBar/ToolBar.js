@@ -2,9 +2,7 @@ import BaseComponent from '../BaseComponent/BaseComponent.js';
 
 class ToolBar extends BaseComponent {
   constructor() {
-    super({
-      controlType: 'Rectangle'
-    });
+    super();
   }
 
   onMount() {
@@ -13,54 +11,61 @@ class ToolBar extends BaseComponent {
     const $glue = this.querySelector('#glue');
 
     // Event Triggers when Eraser clicked.
-    $eraser.addEventListener('click', (event) => {
-      this.$app.dispatchEvent(
-        new CustomEvent('onErase', {})
-      );
-    });
+    if ($eraser) {
+      $eraser.addEventListener('click', (event) => {
+        this.$app.dispatchEvent(
+          new CustomEvent('onErase', {})
+        );
+      });
+    }
 
     // Event Triggers when Scissor clicked.
-    $scissor.addEventListener('click', (event) => {
-      this.$app.dispatchEvent(
-        new CustomEvent('onSplitShape', {})
-      );
-    });
+    if ($scissor) {
+      $scissor.addEventListener('click', (event) => {
+        this.$app.dispatchEvent(
+          new CustomEvent('onSplitShape', {})
+        );
+      });
+    }
 
     // Event Triggers when Glue clicked.
-    $glue.addEventListener('click', (event) => {
-      this.$app.dispatchEvent(
-        new CustomEvent('onGlueShape', {})
-      );
-    });
+    if ($glue) {
+      $glue.addEventListener('click', (event) => {
+        this.$app.dispatchEvent(
+          new CustomEvent('onGlueShape', {})
+        );
+      });
+    }
+  }
+
+  getToolIcon(type, canShow) {
+    if (canShow !== "true") {
+      return '';
+    }
+
+    return `<img
+      src="./assets/images/${type}.svg"
+      class="toolbar-icons"
+      id="${type}"
+      title="${type}"
+    />`;
   }
 
   render() {
+    const eraser = this.getAttribute('eraser');
+    const scissor = this.getAttribute('scissor');
+    const glue = this.getAttribute('glue');
 
     this.innerHTML = `
       <div class="toolbar">
         <div>
-          <img
-            src="./assets/images/eraser.svg"
-            class="toolbar-icons"
-            id="eraser"
-            title="Eraser"
-          />
+          ${this.getToolIcon('eraser', eraser)}
         </div>
         <div>
-          <img
-            src="./assets/images/scissor.svg"
-            class="toolbar-icons"
-            id="scissor"
-            title="Scissor"
-          />
+          ${this.getToolIcon('scissor', scissor)}
         </div>
         <div>
-          <img
-            src="./assets/images/glue.svg"
-            class="toolbar-icons"
-            id="glue"
-            title="Glue"
-          />
+          ${this.getToolIcon('glue', glue)}
         </div>
       </div>
     `;

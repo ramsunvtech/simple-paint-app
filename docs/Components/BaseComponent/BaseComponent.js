@@ -1,4 +1,4 @@
-// import { apiEndpoint } from '../../config.js';
+import { apiEndpoint } from '../../config.js';
 
 class BaseComponent extends HTMLElement {
   constructor(state = {}) {
@@ -6,7 +6,7 @@ class BaseComponent extends HTMLElement {
 
     this.state = {
       ...state,
-      // apiEndpoint,
+      apiEndpoint,
     };
 
     this.$app = document.querySelector('simple-paint-app');

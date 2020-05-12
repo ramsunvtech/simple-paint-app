@@ -1,0 +1,11 @@
+{
+  "config": {
+    "paintArea": {
+      "width": "500",
+      "height": "400"
+    },
+    "addEraser": true,
+    "addScissor": true,
+    "addGlue": true
+  }
+}

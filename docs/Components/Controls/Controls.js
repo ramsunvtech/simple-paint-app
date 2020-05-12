@@ -1,9 +1,15 @@
 import BaseComponent from '../BaseComponent/BaseComponent.js';
 
+import {
+  RECTANGLE,
+  CIRCLE,
+  TRIANGLE,
+} from '../../Constants.js';
+
 class Controls extends BaseComponent {
   constructor() {
     super({
-      controlType: 'Rectangle',
+      controlType: RECTANGLE,
     });
   }
 
@@ -31,27 +37,27 @@ class Controls extends BaseComponent {
         <input
           type="radio"
           name="shapes"
-          value="Rectangle"
-          ${controlType === "Rectangle" ? 'checked' : ''}
+          value="${RECTANGLE}"
+          ${controlType === RECTANGLE ? 'checked' : ''}
           class="radio-group"
         />
-          Rectangle
+          ${RECTANGLE}
         <input
           type="radio"
           name="shapes"
-          value="Circle"
-          ${controlType === "Circle" ? 'checked': ''}
+          value="${CIRCLE}"
+          ${controlType === CIRCLE ? 'checked': ''}
           class="radio-group"
         />
-          Circle
+          ${CIRCLE}
         <input
           type="radio"
           name="shapes"
-          value="Triangle"
-          ${controlType === "Triangle" ? 'checked' : ''}
+          value="${TRIANGLE}"
+          ${controlType === TRIANGLE ? 'checked' : ''}
           class="radio-group"
         />
-          Triangle
+          ${TRIANGLE}
       <div>
     `;
   }
